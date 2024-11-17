@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: db-nest-api-app-database
+    platform: linux/x86_64
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: nest-api-app-database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d nest-api-app-database']
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data

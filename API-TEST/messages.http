@@ -1,0 +1,42 @@
+@baseUrl = http://127.0.0.1:3000
+
+# MESSAGES
+
+# Cria uma nova mensagem com os dados fornecidos no corpo da requisição.
+###
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "text": "Hello world",
+  "fromId": "cff5f996-22a8-4ca3-aecf-4159362c2047",
+  "toId": "e5ea1327-9425-422c-ae77-1756e43c4c21",
+  "read": false,
+  "date": "2024-10-05T16:45:57.457Z"
+}
+
+# Obtém uma lista de todas as mensagens.
+###
+GET {{baseUrl}}/messages/
+?limit=10
+&offset=0
+&sort=DESC
+
+# Obtém os detalhes de uma mensagem específica com o ID 1.
+###
+GET {{baseUrl}}/messages/06777698-74f5-4f82-8b11-f0899abf66a2
+
+
+# Atualiza uma mensagem específica com o ID 11ee4980-2b17-4d05-9d40-aaa5e5b2b77f usando os dados fornecidos no corpo da requisição.
+###
+PATCH {{baseUrl}}/messages/06777698-74f5-4f82-8b11-f0899abf66a2
+Content-Type: application/json
+
+{
+  "text": "Update world",
+  "read": true
+}
+
+# Exclui uma mensagem específica com o ID 11ee4980-2b17-4d05-9d40-aaa5e5b2b77f.
+###
+DELETE {{baseUrl}}/messages/11ee4980-2b17-4d05-9d40-aaa5e5b2b77f
