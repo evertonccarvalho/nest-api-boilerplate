@@ -44,11 +44,13 @@ export class UsersService {
       skip: query.offset ?? undefined,
       order: { createdAt: query.sort ?? 'DESC' },
     });
+
     return {
       count,
       users: users.map((message) => new UserPresenter(message)),
     };
   }
+
   async findOne(id: string) {
     const user = await this.userRepository.findOne({
       where: { id },
