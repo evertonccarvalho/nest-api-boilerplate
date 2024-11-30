@@ -37,6 +37,6 @@ export class AuthService {
 
     const accessToken = await this.jwtService.generateJwt(user.id);
 
-    return { accessToken };
+    return accessToken;
   }
 }

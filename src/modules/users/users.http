@@ -1,5 +1,5 @@
 @baseUrl = http://127.0.0.1:3000
-
+@Authorization = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2MmU5MTFlLTMyZDItNGQzMS1iOTdlLWEyMTEwOWE3YTkxZCIsImlhdCI6MTczMjk4MjExMSwiZXhwIjoxNzMyOTg1NzExLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.DEQKw5ErUCD6uezMf23RUFbTDVMu9H5nF54HvVcrBSY
 # USERS
 
 # Cria um novo usuário com os dados fornecidos no corpo da requisição.
@@ -15,21 +15,19 @@ Content-Type: application/json
 
 # Obtém uma lista de todos os usuários.
 ###
-GET {{baseUrl}}/users
-Content-Type: application/json
-
-?limit=10
-&offset=0
-&sort=desc
+GET {{baseUrl}}/users?limit=10&offset=0&sort=desc
+Authorization: Bearer {{Authorization}}
 
 # Obtém os detalhes de um usuário específico com o ID fornecido.
 ###
 GET {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
+Authorization: Bearer {{Authorization}}
 Content-Type: application/json
 
 # Atualiza um usuário específico com o ID fornecido.
 ###
 PATCH {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
+Authorization: Bearer {{Authorization}}
 Content-Type: application/json
 
 {
@@ -42,9 +40,10 @@ PATCH {{baseUrl}}/users/new-password/062e911e-32d2-4d31-b97e-a21109a7a91d
 Content-Type: application/json
 
 {
-  "password": "password123"
+  "password": "password"
 }
 
 # Exclui um usuário específico com o ID fornecido.
 ###
 DELETE {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
+Authorization: Bearer {{Authorization}}
