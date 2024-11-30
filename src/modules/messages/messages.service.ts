@@ -81,7 +81,7 @@ export class MessagesService {
     const message = await this.findOne(id);
 
     if (message.from.id !== tokenPayload.id) {
-      throw new NotFoundException(`Message with ID ${id} not found`);
+      throw new NotFoundException(`This message does not belong to you`);
     }
 
     message.read = updateMessageDto?.read ?? message.read;
@@ -94,12 +94,12 @@ export class MessagesService {
       where: { id },
     });
 
-    if (message.from.id !== tokenPayload.id) {
+    if (!message) {
       throw new NotFoundException(`Message with ID ${id} not found`);
     }
 
-    if (!message) {
-      throw new NotFoundException(`Message with ID ${id} not found`);
+    if (message.from.id !== tokenPayload.id) {
+      throw new NotFoundException(`This message does not belong to you`);
     }
 
     await this.messageRepository.remove(message);
