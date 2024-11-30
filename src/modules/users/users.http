@@ -1,0 +1,50 @@
+@baseUrl = http://127.0.0.1:3000
+
+# USERS
+
+# Cria um novo usuário com os dados fornecidos no corpo da requisição.
+###
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "johndoe",
+  "email": "johndoe3@example.com",
+  "password": "password123"
+}
+
+# Obtém uma lista de todos os usuários.
+###
+GET {{baseUrl}}/users
+Content-Type: application/json
+
+?limit=10
+&offset=0
+&sort=desc
+
+# Obtém os detalhes de um usuário específico com o ID fornecido.
+###
+GET {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
+Content-Type: application/json
+
+# Atualiza um usuário específico com o ID fornecido.
+###
+PATCH {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
+Content-Type: application/json
+
+{
+  "name": "newName"
+}
+
+# Atualiza a senha de um usuário específico.
+###
+PATCH {{baseUrl}}/users/new-password/062e911e-32d2-4d31-b97e-a21109a7a91d
+Content-Type: application/json
+
+{
+  "password": "newPassword"
+}
+
+# Exclui um usuário específico com o ID fornecido.
+###
+DELETE {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d

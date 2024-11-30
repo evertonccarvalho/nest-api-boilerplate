@@ -5,7 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HashingService } from '../auth/hashing/hasher.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserPresenter } from './presenters/user.presenter';
@@ -16,16 +18,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly hashingService: HashingService,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    const newUser = {
-      name: createUserDto.name,
-      email: createUserDto.email,
-      passwordHash: createUserDto.password,
-    };
+    const { email, name, password } = createUserDto;
+    const passwordHash = await this.hashingService.hash(password);
 
     try {
-      const user = this.userRepository.create(newUser);
+      const user = this.userRepository.create({ name, email, passwordHash });
       await this.userRepository.save(user);
     } catch (error: any) {
       console.log(error);
@@ -66,6 +66,27 @@ export class UsersService {
     const user = await this.userRepository.preload({
       id,
       name: updateUserDto.name,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    await this.userRepository.save(user);
+    return new UserPresenter(user);
+  }
+
+  async updatePassword(
+    id: string,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    const passwordHash = await this.hashingService.hash(
+      updateUserPasswordDto.password,
+    );
+
+    const user = await this.userRepository.preload({
+      id,
+      passwordHash,
     });
 
     if (!user) {
