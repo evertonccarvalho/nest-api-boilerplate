@@ -8,7 +8,11 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { TokenPayloadDto } from '../auth/dtos/token-payload.dto';
+import { TokenPayloadParams } from '../auth/params/token-payload.params';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
@@ -18,9 +22,13 @@ import { MessagesQuery } from './queries/messages.query';
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+  create(
+    @Body() createMessageDto: CreateMessageDto,
+    @TokenPayloadParams() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.messagesService.create(createMessageDto, tokenPayload);
   }
 
   @Get()
@@ -33,16 +41,24 @@ export class MessagesController {
     return await this.messagesService.findOne(id);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMessageDto: UpdateMessageDto,
+    @TokenPayloadParams() tokenPayload: TokenPayloadDto,
   ) {
-    return this.messagesService.update(id, updateMessageDto);
+    return this.messagesService.update(id, updateMessageDto, tokenPayload);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.messagesService.remove(id);
+  remove(
+    @Param('id', new ParseUUIDPipe())
+    @TokenPayloadParams()
+    tokenPayload: TokenPayloadDto,
+    id: string,
+  ) {
+    return this.messagesService.remove(id, tokenPayload);
   }
 }

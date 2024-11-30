@@ -7,11 +7,11 @@ export function setupSwagger(app: INestApplication) {
 
   if (!configService.get('App.isProduction')) {
     const config = new DocumentBuilder()
-      .setTitle('API')
-      .setDescription('Sistema de autenticação JWT.')
+      .setTitle('On-Delivery API')
+      .setDescription('Sistema de gerenciamento de entregas.')
       .setVersion('1.0.0')
       .addBearerAuth({
-        description: 'Informar o JWT para autorizar o acesso',
+        description: 'Informe o JWT para autorizar o acesso',
         name: 'Authorization',
         scheme: 'Bearer',
         type: 'http',

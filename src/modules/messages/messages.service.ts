@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TokenPayloadDto } from '../auth/dtos/token-payload.dto';
 import { UsersService } from '../users/users.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -16,13 +17,16 @@ export class MessagesService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createMessageDto: CreateMessageDto): Promise<MessagePresenter> {
-    const from = await this.usersService.findOne(createMessageDto.fromId);
+  async create(
+    createMessageDto: CreateMessageDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
+    const from = await this.usersService.findOne(tokenPayload.id);
     const to = await this.usersService.findOne(createMessageDto.toId);
     const newMessage = {
       text: createMessageDto.text,
-      from: from.id,
-      to: to.id,
+      from: from,
+      to: to,
       read: false,
       createdAt: new Date(),
     };
@@ -34,9 +38,9 @@ export class MessagesService {
   async findAll(
     query: MessagesQuery,
   ): Promise<{ messages: MessagePresenter[]; count: number }> {
-    const limit = query.limit ?? 10; // Valor padrão de 10
-    const offset = query.offset ?? 0; // Começa no primeiro registro
-    const sort = query.sort ?? 'DESC'; // Padrão: ordem decrescente
+    const limit = query.limit ?? 10;
+    const offset = query.offset ?? 0;
+    const sort = query.sort ?? 'DESC';
 
     const [messages, count] = await this.messageRepository
       .createQueryBuilder('message')
@@ -54,14 +58,13 @@ export class MessagesService {
     };
   }
   async findOne(id: string): Promise<MessagePresenter> {
-    const queryBuilder = this.messageRepository
+    const message = await this.messageRepository
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.from', 'from')
       .leftJoinAndSelect('message.to', 'to')
       .where('message.id = :id', { id })
-      .select(['message', 'from.id', 'from.name', 'to.id', 'to.name']);
-
-    const message = await queryBuilder.getOne();
+      .select(['message', 'from.id', 'from.name', 'to.id', 'to.name'])
+      .getOne();
 
     if (!message) {
       throw new NotFoundException(`Message with ID ${id} not found`);
@@ -73,19 +76,27 @@ export class MessagesService {
   async update(
     id: string,
     updateMessageDto: UpdateMessageDto,
+    tokenPayload: TokenPayloadDto,
   ): Promise<MessagePresenter> {
     const message = await this.findOne(id);
 
-    message.text = updateMessageDto?.text ?? message.text;
+    if (message.from.id !== tokenPayload.id) {
+      throw new NotFoundException(`Message with ID ${id} not found`);
+    }
+
     message.read = updateMessageDto?.read ?? message.read;
     await this.messageRepository.save(message);
     return new MessagePresenter(message);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, tokenPayload: TokenPayloadDto): Promise<void> {
     const message = await this.messageRepository.findOne({
       where: { id },
     });
+
+    if (message.from.id !== tokenPayload.id) {
+      throw new NotFoundException(`Message with ID ${id} not found`);
+    }
 
     if (!message) {
       throw new NotFoundException(`Message with ID ${id} not found`);

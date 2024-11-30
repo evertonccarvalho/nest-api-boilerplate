@@ -14,8 +14,5 @@ export class CreateMessageDto {
   readonly text: string;
 
   @IsUUID()
-  readonly fromId: string;
-
-  @IsUUID()
   readonly toId: string;
 }

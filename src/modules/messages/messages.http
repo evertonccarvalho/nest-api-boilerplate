@@ -1,16 +1,25 @@
 @baseUrl = http://127.0.0.1:3000
+@authToken = {{authenticate.response.body.accessToken}}
 
-# MESSAGES
+# @name authenticate
+POST {{baseUrl}}/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "johndoe43@example.com",
+  "password": "password123"
+}
+
 
 # Cria uma nova mensagem com os dados fornecidos no corpo da requisição.
 ###
 POST {{baseUrl}}/messages
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
   "text": "Hello world",
-  "fromId": "cff5f996-22a8-4ca3-aecf-4159362c2047",
-  "toId": "e5ea1327-9425-422c-ae77-1756e43c4c21",
+  "toId": "062e911e-32d2-4d31-b97e-a21109a7a91d",
   "read": false,
   "date": "2024-10-05T16:45:57.457Z"
 }
@@ -24,12 +33,13 @@ GET {{baseUrl}}/messages/
 
 # Obtém os detalhes de uma mensagem específica com o ID 1.
 ###
-GET {{baseUrl}}/messages/06777698-74f5-4f82-8b11-f0899abf66a2
+GET {{baseUrl}}/messages/fb927752-d398-4834-9e7a-56b013ee48cd
 
 
 # Atualiza uma mensagem específica com o ID 11ee4980-2b17-4d05-9d40-aaa5e5b2b77f usando os dados fornecidos no corpo da requisição.
 ###
-PATCH {{baseUrl}}/messages/06777698-74f5-4f82-8b11-f0899abf66a2
+PATCH {{baseUrl}}/messages/fb927752-d398-4834-9e7a-56b013ee48cd
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {

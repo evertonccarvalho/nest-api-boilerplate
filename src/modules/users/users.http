@@ -1,15 +1,11 @@
 @baseUrl = http://127.0.0.1:3000
 @authToken = {{authenticate.response.body.accessToken}}
-# USERS
-
-@baseUrl = http://127.0.0.1:3000
-
 # @name authenticate
 POST {{baseUrl}}/auth/sign-in
 Content-Type: application/json
 
 {
-  "email": "johndoe3@example.com",
+  "email": "johndoe43@example.com",
   "password": "password123"
 }
 

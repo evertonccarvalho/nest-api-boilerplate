@@ -19,11 +19,11 @@ export class Message {
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'from_id' })
-  from: string;
+  from: User; // Alterado para ser do tipo User
 
   @ManyToOne(() => User, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'to_id' })
-  to: string;
+  to: User; // Alterado para ser do tipo User
 
   @Column({ type: 'boolean', nullable: false })
   read: boolean;
