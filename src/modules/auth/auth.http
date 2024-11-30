@@ -1,0 +1,13 @@
+@baseUrl = http://127.0.0.1:3000
+
+# USERS
+
+# Cria um novo usuário com os dados fornecidos no corpo da requisição.
+###
+POST {{baseUrl}}/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "johndoe3@example.com",
+  "password": "password123"
+}

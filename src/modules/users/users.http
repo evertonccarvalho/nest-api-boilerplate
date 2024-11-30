@@ -42,7 +42,7 @@ PATCH {{baseUrl}}/users/new-password/062e911e-32d2-4d31-b97e-a21109a7a91d
 Content-Type: application/json
 
 {
-  "password": "newPassword"
+  "password": "password123"
 }
 
 # Exclui um usuário específico com o ID fornecido.
