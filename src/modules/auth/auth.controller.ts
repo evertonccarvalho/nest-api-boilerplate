@@ -9,8 +9,12 @@ export class AuthController {
 
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: '' })
-  @ApiResponse({ status: 200, description: '' })
+  @ApiOperation({
+    summary: 'Authenticate a user',
+    description: 'Logs in a user and returns a JWT token.',
+  })
+  @ApiResponse({ status: 200, description: 'User authenticated successfully.' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   async signIn(@Body() signInDto: SigninDto) {
     return this.authService.signIn(signInDto);
   }

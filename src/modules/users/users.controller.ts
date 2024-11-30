@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { TokenPayloadDto } from '../auth/dtos/token-payload.dto';
+import { TokenPayloadParams } from '../auth/params/token-payload.params';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -38,26 +40,26 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  @UseGuards(AuthGuard)
-  @Patch('new-password/:id')
-  updatePassword(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserPasswordDto,
-  ) {
-    return this.usersService.updatePassword(id, updateUserDto);
-  }
-
-  @UseGuards(AuthGuard)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('me')
+  update(
+    @Body() updateUserDto: UpdateUserDto,
+    @TokenPayloadParams() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.usersService.update(tokenPayload, updateUserDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch('new-password/me')
+  updatePassword(
+    @Body() updateUserDto: UpdateUserPasswordDto,
+    @TokenPayloadParams() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.usersService.updatePassword(tokenPayload, updateUserDto);
   }
 }

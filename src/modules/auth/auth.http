@@ -1,9 +1,6 @@
 @baseUrl = http://127.0.0.1:3000
-
-# USERS
-
-# Cria um novo usuário com os dados fornecidos no corpo da requisição.
-###
+@authToken = {{authenticate.response.body.accessToken}}
+# @name authenticate
 POST {{baseUrl}}/auth/sign-in
 Content-Type: application/json
 

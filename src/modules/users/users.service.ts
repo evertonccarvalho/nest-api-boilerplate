@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TokenPayloadDto } from '../auth/dtos/token-payload.dto';
 import { HashingService } from '../auth/hashing/hasher.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
@@ -70,14 +71,14 @@ export class UsersService {
     return new UserPresenter(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(tokenPayload: TokenPayloadDto, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.preload({
-      id,
+      id: tokenPayload.id,
       name: updateUserDto.name,
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${tokenPayload.id} not found`);
     }
 
     await this.userRepository.save(user);
@@ -85,7 +86,7 @@ export class UsersService {
   }
 
   async updatePassword(
-    id: string,
+    tokenPayload: TokenPayloadDto,
     updateUserPasswordDto: UpdateUserPasswordDto,
   ) {
     const passwordHash = await this.hashingService.hash(
@@ -93,12 +94,12 @@ export class UsersService {
     );
 
     const user = await this.userRepository.preload({
-      id,
+      id: tokenPayload.id,
       passwordHash,
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${tokenPayload.id} not found`);
     }
 
     await this.userRepository.save(user);

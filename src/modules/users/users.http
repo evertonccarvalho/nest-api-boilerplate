@@ -1,6 +1,17 @@
 @baseUrl = http://127.0.0.1:3000
-@Authorization = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA2MmU5MTFlLTMyZDItNGQzMS1iOTdlLWEyMTEwOWE3YTkxZCIsImlhdCI6MTczMjk4MjExMSwiZXhwIjoxNzMyOTg1NzExLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.DEQKw5ErUCD6uezMf23RUFbTDVMu9H5nF54HvVcrBSY
+@authToken = {{authenticate.response.body.accessToken}}
 # USERS
+
+@baseUrl = http://127.0.0.1:3000
+
+# @name authenticate
+POST {{baseUrl}}/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "johndoe3@example.com",
+  "password": "password123"
+}
 
 # Cria um novo usuário com os dados fornecidos no corpo da requisição.
 ###
@@ -8,26 +19,26 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "name": "johndoe",
-  "email": "johndoe3@example.com",
+  "name": "johndoe2",
+  "email": "johndoe43@example.com",
   "password": "password123"
 }
 
 # Obtém uma lista de todos os usuários.
 ###
 GET {{baseUrl}}/users?limit=10&offset=0&sort=desc
-Authorization: Bearer {{Authorization}}
+Authorization: Bearer {{authToken}}
 
 # Obtém os detalhes de um usuário específico com o ID fornecido.
 ###
 GET {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
-Authorization: Bearer {{Authorization}}
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 # Atualiza um usuário específico com o ID fornecido.
 ###
-PATCH {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
-Authorization: Bearer {{Authorization}}
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -36,7 +47,8 @@ Content-Type: application/json
 
 # Atualiza a senha de um usuário específico.
 ###
-PATCH {{baseUrl}}/users/new-password/062e911e-32d2-4d31-b97e-a21109a7a91d
+PATCH {{baseUrl}}/users/new-password/me
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
@@ -46,4 +58,4 @@ Content-Type: application/json
 # Exclui um usuário específico com o ID fornecido.
 ###
 DELETE {{baseUrl}}/users/062e911e-32d2-4d31-b97e-a21109a7a91d
-Authorization: Bearer {{Authorization}}
+Authorization: Bearer {{authToken}}
