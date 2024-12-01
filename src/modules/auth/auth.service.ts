@@ -24,11 +24,11 @@ export class AuthService {
     const { email, password } = signInDto;
 
     const user = await this.userRepository.findOne({
-      where: { email },
+      where: { email, isActive: true },
     });
 
     if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
+      throw new NotFoundException(`User unauthorized`);
     }
 
     const hashPasswordMatches = await this.hashingService.compare(
@@ -46,9 +46,13 @@ export class AuthService {
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
       const res = await this.jwtService.verifyJwt(refreshTokenDto.refreshToken);
-      const user = await this.userRepository.findOne(res.sub);
+
+      const user = await this.userRepository.findOne({
+        where: { id: res.sub, isActive: true },
+      });
+
       if (!user) {
-        throw new NotFoundException(`User with id ${res.sub} not found`);
+        throw new NotFoundException(`User unauthorized`);
       }
       return this.jwtService.generateTokens(user);
     } catch (error) {
