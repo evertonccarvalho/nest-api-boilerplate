@@ -5,14 +5,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { REQUEST_TOKEN_PAYLOAD } from 'src/modules/auth/constants/auth.constants';
 import { JwtTokenService } from 'src/modules/auth/encrypter/jwt/jwt.service';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Repository } from 'typeorm';
 import { IS_PUBLIC_KEY } from '../decorators/auth.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private jwtService: JwtTokenService,
     private reflector: Reflector,
   ) {}
@@ -36,6 +41,14 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyJwt(token);
+
+      const user = await this.userRepository.findOne({
+        where: { id: payload.sub, isActive: true },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException(`User unauthorized`);
+      }
 
       request[REQUEST_TOKEN_PAYLOAD] = payload;
     } catch (error) {

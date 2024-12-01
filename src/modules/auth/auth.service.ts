@@ -28,7 +28,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException(`User unauthorized`);
+      throw new UnauthorizedException(`User unauthorized`);
     }
 
     const hashPasswordMatches = await this.hashingService.compare(
@@ -45,10 +45,12 @@ export class AuthService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const res = await this.jwtService.verifyJwt(refreshTokenDto.refreshToken);
+      const payload = await this.jwtService.verifyJwt(
+        refreshTokenDto.refreshToken,
+      );
 
       const user = await this.userRepository.findOne({
-        where: { id: res.sub, isActive: true },
+        where: { id: payload.sub, isActive: true },
       });
 
       if (!user) {
