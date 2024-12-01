@@ -49,4 +49,6 @@ Content-Type: application/json
 
 # Exclui uma mensagem específica com o ID 11ee4980-2b17-4d05-9d40-aaa5e5b2b77f.
 ###
-DELETE {{baseUrl}}/messages/11ee4980-2b17-4d05-9d40-aaa5e5b2b77f
+DELETE {{baseUrl}}/messages/fb927752-d398-4834-9e7a-56b013ee48cd
+Authorization: Bearer {{authToken}}
+

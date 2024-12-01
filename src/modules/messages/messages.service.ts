@@ -90,9 +90,7 @@ export class MessagesService {
   }
 
   async remove(id: string, tokenPayload: TokenPayloadDto): Promise<void> {
-    const message = await this.messageRepository.findOne({
-      where: { id },
-    });
+    const message = await this.findOne(id);
 
     if (!message) {
       throw new NotFoundException(`Message with ID ${id} not found`);
@@ -102,6 +100,6 @@ export class MessagesService {
       throw new NotFoundException(`This message does not belong to you`);
     }
 
-    await this.messageRepository.remove(message);
+    await this.messageRepository.delete(message.id);
   }
 }

@@ -54,11 +54,11 @@ export class MessagesController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   remove(
-    @Param('id', new ParseUUIDPipe())
+    @Param('id', ParseUUIDPipe) id: string,
     @TokenPayloadParams()
     tokenPayload: TokenPayloadDto,
-    id: string,
   ) {
+    console.log(tokenPayload);
     return this.messagesService.remove(id, tokenPayload);
   }
 }
