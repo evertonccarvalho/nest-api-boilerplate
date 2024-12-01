@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InvalidCredentialsError } from 'src/common/errors/invalid-credentials-error';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { SigninDto } from './dtos/sign-in.dto';
 import { JwtTokenService } from './encrypter/jwt/jwt.service';
 import { HashingService } from './hashing/hasher.service';
@@ -35,8 +40,19 @@ export class AuthService {
       throw new InvalidCredentialsError('Invalid credentials');
     }
 
-    const accessToken = await this.jwtService.generateJwt(user.id);
+    return await this.jwtService.generateTokens(user);
+  }
 
-    return accessToken;
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const res = await this.jwtService.verifyJwt(refreshTokenDto.refreshToken);
+      const user = await this.userRepository.findOne(res.sub);
+      if (!user) {
+        throw new NotFoundException(`User with id ${res.sub} not found`);
+      }
+      return this.jwtService.generateTokens(user);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 }

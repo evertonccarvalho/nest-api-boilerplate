@@ -1,10 +1,24 @@
 @baseUrl = http://127.0.0.1:3000
 @authToken = {{authenticate.response.body.accessToken}}
+@refreshToken = {{authenticate.response.body.refreshToken}}
+
+
 # @name authenticate
 POST {{baseUrl}}/auth/sign-in
 Content-Type: application/json
 
 {
-  "email": "johndoe3@example.com",
+  "email": "johndoe43@example.com",
   "password": "password123"
 }
+
+
+###
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+ "refreshToken": "{{refreshToken}}"
+}
+
