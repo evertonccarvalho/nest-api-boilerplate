@@ -10,7 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { TokenPayloadDto } from '../auth/dtos/token-payload.dto';
 import { TokenPayloadParams } from '../auth/params/token-payload.params';
 import { CreateMessageDto } from './dto/create-message.dto';
